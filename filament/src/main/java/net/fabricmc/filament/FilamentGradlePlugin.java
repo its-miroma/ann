@@ -24,6 +24,7 @@ import net.fabricmc.filament.task.DropJavadocErrorsTask;
 import net.fabricmc.filament.task.FixMappingsTask;
 import net.fabricmc.filament.task.FormatMappingsTask;
 import net.fabricmc.filament.task.JavaRuntimeJarTask;
+import net.fabricmc.filament.task.LintMarkdownTask;
 import net.fabricmc.filament.task.unpick.CheckUnpickDefinitionsTask;
 import net.fabricmc.filament.task.unpick.CombineUnpickDefinitionsTask;
 import net.fabricmc.filament.util.FilamentConstants;
@@ -99,6 +100,12 @@ public final class FilamentGradlePlugin implements Plugin<Project> {
 			task.getReport().set(decompile.flatMap(DecompileTask::getReport));
 		});
 
+		var lintMarkdown = tasks.register("lintMarkdown", LintMarkdownTask.class, task -> {
+			task.getMappings().set(mappings);
+			task.getMinecraftJars().from(minecraftJars);
+			task.getOutput().set(buildDir.dir("markdown-segments"));
+		});
+
 		// Checks the javadocs in the decompiled sources of the documented classes
 		tasks.named("javadoc", Javadoc.class, task -> {
 			task.setSource(decompile.flatMap(DecompileTask::getOutput));
@@ -110,7 +117,7 @@ public final class FilamentGradlePlugin implements Plugin<Project> {
 			FilamentConstants.JAVADOC_OPTIONS.forEach(flag -> options.addBooleanOption(flag.substring(1), true));
 		});
 
-		tasks.named("check", task -> task.dependsOn(checkMappings, checkDecompile, checkUnpickDefinitions, "javadoc"));
+		tasks.named("check", task -> task.dependsOn(checkMappings, checkDecompile, checkUnpickDefinitions, "javadoc", lintMarkdown));
 
 		// The check tasks have no outputs, so they are not automatically ordered after clean
 		checkMappings.configure(task -> task.mustRunAfter("clean"));

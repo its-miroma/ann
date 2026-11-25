@@ -12,12 +12,16 @@
 !.editorconfig
 !.gitattributes
 !.gitignore
+!.markdownlint-cli2.yaml
+!.nvmrc
 !build.gradle
 !config.json
 !gradle.properties
 !gradlew
 !gradlew.bat
 !LICENSE
+!package.json
+!package-lock.json
 !README.md
 !CONVENTIONS.md
 !settings.gradle

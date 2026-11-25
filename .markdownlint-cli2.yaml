@@ -1,0 +1,4 @@
+config:
+  line-length: false
+  reference-links-images:
+    shortcut_syntax: true
